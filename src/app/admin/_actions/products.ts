@@ -42,6 +42,7 @@ export async function addProduct(prevState: unknown,formData: FormData){
     /*but after saying that, he prefixes image path with public idk why> */
     
     await prisma.product.create({data: {
+        isAvailableForPurchase: false,
         name: data.name,
         description: data.description,
         priceInCents: data.priceInCents,
