@@ -2,7 +2,7 @@
 import prisma from "@/db/client"
 import {z} from "zod"
 import fs from "fs/promises"
-import { redirect } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 
 const fileSchema = z.instanceof(File, {message: "Required!"})
 const imageSchema = fileSchema.refine(file=> file.size === 0 || file.type.startsWith("image/"))
@@ -54,4 +54,13 @@ export async function addProduct(prevState: unknown,formData: FormData){
     console.log(formData);
 
     redirect("/admin/products")
+}
+
+export async function toggleProductAvailablity(id:string, isAvailableForPurchase:boolean){
+    await prisma.product.update({ where: {id:id}, data: {isAvailableForPurchase:isAvailableForPurchase} })
+    //can also return it, but we are not doing it.
+}
+export async function deleteProduct(id: string){
+    const deletedProduct = await prisma.product.delete({where:{id:id}})
+    if(deletedProduct == null) return notFound()
 }
